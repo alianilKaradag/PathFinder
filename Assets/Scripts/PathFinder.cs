@@ -18,6 +18,9 @@ public class PathFinder
 
         if (startNode == null || targetNode == null) return null;
         
+        // Her yol bulmada node'ları temizle
+        ResetNodes();
+        
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
         
@@ -56,9 +59,9 @@ public class PathFinder
                 int newGCost = currentNode.GCost + GetDistance(currentNode, neighbor);
                 if (newGCost < neighbor.GCost || !openSet.Contains(neighbor))
                 {
-                    neighbor.GCost = newGCost;
-                    neighbor.HCost = GetDistance(neighbor, targetNode);
-                    neighbor.Parent = currentNode;
+                    neighbor.SetGCost(newGCost);
+                    neighbor.SetHCost(GetDistance(neighbor, targetNode));
+                    neighbor.SetParent(currentNode);
 
                     if (!openSet.Contains(neighbor))
                     {
@@ -91,5 +94,20 @@ public class PathFinder
         path.Add(startNode);
         path.Reverse();
         return path;
+    }
+
+    private void ResetNodes()
+    {
+        // Node'ların G, H costlarını ve Parent'larını sıfırla
+        for (int x = 0; x < _grid.Width; x++)
+        {
+            for (int y = 0; y < _grid.Height; y++)
+            {
+                Node node = _grid.GetNode(x, y);
+                node.SetGCost(0);
+                node.SetHCost(0);
+                node.SetParent(null);
+            }
+        }
     }
 }

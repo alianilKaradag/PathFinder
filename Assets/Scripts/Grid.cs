@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class Grid
 {
+    public Node[,] Nodes => _nodes;
+
+    public int Width => _width;
+    public int Height => _height;
+
     private Node[,] _nodes;
     private int _width;
     private int _height;
@@ -41,7 +46,7 @@ public class Grid
     {
         if (x >= 0 && x < _width && y >= 0 && y < _height)
         {
-            _nodes[x, y].IsWalkable = walkable;
+            _nodes[x, y].SetWalkable(walkable);
         }
     }
 
@@ -72,4 +77,25 @@ public class Grid
 
         return neighbors;
     }
+
+    // Toplu güncelleme için yeni metod
+    public void UpdateNodeStates(List<Vector2Int> obstacles)
+    {
+        // Önce tüm nodeları walkable yap
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                _nodes[x, y].SetWalkable(true);
+            }
+        }
+
+        // Engelleri işaretle
+        foreach (var obstacle in obstacles)
+        {
+            SetWalkable(obstacle.x, obstacle.y, false);
+        }
+    }
+
+  
 } 

@@ -135,4 +135,29 @@ public class GridVisualizer : MonoBehaviour
             Debug.LogError($"Node objesi bulunamadı: {x}, {y}");
         }
     }
+
+    public void UpdateAllGrid(List<Vector2Int> obstacles)
+    {
+        // Grid'i güncelle
+        _grid.UpdateNodeStates(obstacles);
+        
+        // Görsel güncelleme
+        for (int x = 0; x < _gridSizeX; x++)
+        {
+            for (int y = 0; y < _gridSizeY; y++)
+            {
+                Node node = _grid.GetNode(x, y);
+                UpdateNodeVisual(x, y, node.IsWalkable ? Color.white : Color.red);
+            }
+        }
+    }
+
+    public void FindNewPath()
+    {
+        List<Node> path = _pathFinder.FindPath(_startPos, _targetPos);
+        if (path != null)
+        {
+            VisualizePath(path);
+        }
+    }
 } 
