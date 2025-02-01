@@ -11,16 +11,16 @@ A simple, clean and reusable A* pathfinding implementation in Unity.
 
 ## Screenshots
 
-### Basic Grid View
+### Obstacles
 <img src="ss/1.png" width="200">
 
-### Path Finding Example
+### Path Finding
 <img src="ss/2.png" width="200">
 
-### Different Grid Size
+### Different Obstacles
 <img src="ss/3.png" width="200">
 
-### With Obstacles
+### Path Finding
 <img src="ss/4.png" width="200">
 
 ## How It Works
