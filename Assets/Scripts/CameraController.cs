@@ -4,7 +4,6 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private GridVisualizer _gridVisualizer;
     [SerializeField] private float _padding = 1f; // Extra space around the grid
-    [SerializeField] private float _angle = 90f;  // Top-down angle
     [SerializeField] private float _heightOffset = 1f; // Fine-tune camera height
 
     private Camera _camera;
@@ -53,7 +52,7 @@ public class CameraController : MonoBehaviour
 
         // Position camera
         transform.position = new Vector3(centerX, _heightOffset, centerY);
-        transform.rotation = Quaternion.Euler(_angle, 0, 0);
+        transform.rotation = Quaternion.Euler(90, 0, 0);
 
         // Calculate required orthographic size
         float gridWidth = _currentGridSizeX + _padding * 2;
