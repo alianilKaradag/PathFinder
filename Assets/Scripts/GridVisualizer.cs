@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 public class GridVisualizer : MonoBehaviour
 {
@@ -7,8 +8,12 @@ public class GridVisualizer : MonoBehaviour
     [SerializeField] private int _gridSizeY = 3;
     [SerializeField] private GameObject _nodePrefab;
     [SerializeField] private Transform _gridParent;
+    
+    [Header("Path Finding Settings")]
     [SerializeField] private Vector2Int _startPos;
     [SerializeField] private Vector2Int _targetPos;
+    [SerializeField, ReorderableList] 
+    private List<Vector2Int> _obstacles = new List<Vector2Int>();
     
     private Grid _grid;
     private GameObject[,] _nodeObjects;
@@ -20,7 +25,13 @@ public class GridVisualizer : MonoBehaviour
         _grid = new Grid(_gridSizeX, _gridSizeY);
         _pathFinder = new PathFinder(_grid);
         CreateVisualGrid();
-        SetupTestScenario();
+        UpdateAllGrid(_obstacles);
+    }
+
+    [Button("Find Path")]
+    private void FindPathButton()
+    {
+        FindNewPath();
     }
 
     private void CreateVisualGrid()
@@ -46,49 +57,6 @@ public class GridVisualizer : MonoBehaviour
                 _nodeObjects[x, y] = nodeObj;
             }
         }
-    }
-
-    private void SetupTestScenario()
-    {
-        Debug.Log("Test senaryosu başlatılıyor...");
-        
-        // Tüm grid'i temizle
-        for (int x = 0; x < _gridSizeX; x++)
-        {
-            for (int y = 0; y < _gridSizeY; y++)
-            {
-                UpdateNodeVisual(x, y, Color.white);
-            }
-        }
-
-        // Engel oluştur
-        MakeTestObstacles();
-
-        // Test için yol bulma
-        Vector2Int startPos = _startPos;
-        Vector2Int targetPos = _targetPos;
-        
-        Debug.Log($"Yol aranıyor: {startPos} -> {targetPos}");
-        List<Node> path = _pathFinder.FindPath(startPos, targetPos);
-        
-        if (path == null)
-        {
-            Debug.LogWarning("Yol bulunamadı!");
-        }
-        else
-        {
-            Debug.Log($"Yol bulundu! Uzunluk: {path.Count}");
-            VisualizePath(path);
-        }
-    }
-
-    private void MakeTestObstacles()
-    {
-        Debug.Log("Engel oluşturuluyor...");
-        _grid.SetWalkable(1, 1, false);
-        _grid.SetWalkable(3, 3, false);
-        UpdateNodeVisual(1, 1, Color.red);
-        UpdateNodeVisual(3, 3, Color.red);
     }
 
     private void VisualizePath(List<Node> path)
@@ -154,10 +122,19 @@ public class GridVisualizer : MonoBehaviour
 
     public void FindNewPath()
     {
+        // Önce engelleri güncelle
+        UpdateAllGrid(_obstacles);
+        
+        // Sonra yol bul
         List<Node> path = _pathFinder.FindPath(_startPos, _targetPos);
         if (path != null)
         {
             VisualizePath(path);
+        }
+        else
+        {
+            Debug.LogWarning("Yol bulunamadı!");
+            // Yol bulunamadığında zaten engeller güncel olacak
         }
     }
 } 
