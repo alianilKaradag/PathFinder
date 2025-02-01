@@ -54,13 +54,12 @@ public class Grid
     {
         List<Node> neighbors = new List<Node>();
         
-        // Sadece 4 yön için komşuları kontrol et (sağ, sol, yukarı, aşağı)
         Vector2Int[] directions = 
         {
-            new Vector2Int(0, 1),  // yukarı
-            new Vector2Int(0, -1), // aşağı
-            new Vector2Int(1, 0),  // sağ
-            new Vector2Int(-1, 0)  // sol
+            new Vector2Int(0, 1),  // Up
+            new Vector2Int(0, -1), // Down
+            new Vector2Int(1, 0),  // Right
+            new Vector2Int(-1, 0)  // Left
         };
 
         foreach (Vector2Int dir in directions)
@@ -78,10 +77,8 @@ public class Grid
         return neighbors;
     }
 
-    // Toplu güncelleme için yeni metod
     public void UpdateNodeStates(List<Vector2Int> obstacles)
     {
-        // Önce tüm nodeları walkable yap
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)
@@ -90,7 +87,6 @@ public class Grid
             }
         }
 
-        // Engelleri işaretle
         foreach (var obstacle in obstacles)
         {
             SetWalkable(obstacle.x, obstacle.y, false);

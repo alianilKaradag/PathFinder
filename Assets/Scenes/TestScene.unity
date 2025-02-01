@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 330585546}
+  - component: {fileID: 330585548}
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
@@ -256,6 +257,22 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a598a996ccbf7f24fbdc1ed8cc6e8bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gridVisualizer: {fileID: 1061622568}
+  _padding: 1
+  _angle: 90
+  _heightOffset: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,6 +509,7 @@ MonoBehaviour:
   _gridParent: {fileID: 904057028}
   _startPos: {x: 0, y: 3}
   _targetPos: {x: 4, y: 3}
+  _obstacles: []
 --- !u!4 &1061622569
 Transform:
   m_ObjectHideFlags: 0

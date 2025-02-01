@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Serialization;
 
 public class PathFinder
 {
@@ -18,7 +17,6 @@ public class PathFinder
 
         if (startNode == null || targetNode == null) return null;
         
-        // Her yol bulmada node'ları temizle
         ResetNodes();
         
         List<Node> openSet = new List<Node>();
@@ -28,7 +26,7 @@ public class PathFinder
 
         while (openSet.Count > 0)
         {
-            // En düşük F Cost'a sahip node'u bul
+            // Find min F cost node
             Node currentNode = openSet[0];
             for (int i = 1; i < openSet.Count; i++)
             {
@@ -42,13 +40,12 @@ public class PathFinder
             openSet.Remove(currentNode);
             closedSet.Add(currentNode);
 
-            // Hedef node'a ulaştık mı?
             if (currentNode == targetNode)
             {
                 return RetracePath(startNode, targetNode);
             }
 
-            // Komşuları değerlendir
+            // Check neighbors
             foreach (Node neighbor in _grid.GetNeighbors(currentNode))
             {
                 if (!neighbor.IsWalkable || closedSet.Contains(neighbor))
@@ -71,7 +68,7 @@ public class PathFinder
             }
         }
 
-        return null; // Yol bulunamadı
+        return null; // Path not found
     }
 
     private int GetDistance(Node nodeA, Node nodeB)
@@ -98,7 +95,6 @@ public class PathFinder
 
     private void ResetNodes()
     {
-        // Node'ların G, H costlarını ve Parent'larını sıfırla
         for (int x = 0; x < _grid.Width; x++)
         {
             for (int y = 0; y < _grid.Height; y++)

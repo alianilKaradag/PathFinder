@@ -4,16 +4,18 @@ using NaughtyAttributes;
 
 public class GridVisualizer : MonoBehaviour
 {
-    [SerializeField] private int _gridSizeX = 3;
-    [SerializeField] private int _gridSizeY = 3;
-    [SerializeField] private GameObject _nodePrefab;
-    [SerializeField] private Transform _gridParent;
+    public int GridSizeX => _gridSizeX;
+    public int GridSizeY => _gridSizeY;
+
+    [SerializeField, OnValueChanged("OnGridSizeChanged")] private int _gridSizeX = 3;
+    [SerializeField, OnValueChanged("OnGridSizeChanged")] private int _gridSizeY = 3;
+    [SerializeField, Foldout("References")] private GameObject _nodePrefab;
+    [SerializeField, Foldout("References")] private Transform _gridParent;
     
     [Header("Path Finding Settings")]
     [SerializeField] private Vector2Int _startPos;
     [SerializeField] private Vector2Int _targetPos;
-    [SerializeField, ReorderableList] 
-    private List<Vector2Int> _obstacles = new List<Vector2Int>();
+    [SerializeField, ReorderableList] private List<Vector2Int> _obstacles = new List<Vector2Int>();
     
     private Grid _grid;
     private GameObject[,] _nodeObjects;
@@ -21,21 +23,47 @@ public class GridVisualizer : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Grid oluşturuluyor...");
+        Debug.Log("Grid is being created...");
+        _grid = new Grid(_gridSizeX, _gridSizeY);
+        _pathFinder = new PathFinder(_grid);
+        CreateVisualGrid();
+        UpdateAllGrid(_obstacles);
+    }
+    
+    private void OnGridSizeChanged()
+    {
+        if (!Application.isPlaying) return;
+        
+        // Destroy old grid objects
+        if (_nodeObjects != null)
+        {
+            for (int x = 0; x < _nodeObjects.GetLength(0); x++)
+            {
+                for (int y = 0; y < _nodeObjects.GetLength(1); y++)
+                {
+                    if (_nodeObjects[x, y] != null)
+                    {
+                        Destroy(_nodeObjects[x, y]);
+                    }
+                }
+            }
+        }
+
+        // Create new grid
         _grid = new Grid(_gridSizeX, _gridSizeY);
         _pathFinder = new PathFinder(_grid);
         CreateVisualGrid();
         UpdateAllGrid(_obstacles);
     }
 
-    [Button("Find Path")]
-    private void FindPathButton()
-    {
-        FindNewPath();
-    }
-
     private void CreateVisualGrid()
     {
+        // Destroy any existing child objects under gridParent
+        while (_gridParent.childCount > 0)
+        {
+            DestroyImmediate(_gridParent.GetChild(0).gameObject);
+        }
+
         _nodeObjects = new GameObject[_gridSizeX, _gridSizeY];
         
         for (int x = 0; x < _gridSizeX; x++)
@@ -46,7 +74,6 @@ public class GridVisualizer : MonoBehaviour
                 GameObject nodeObj = Instantiate(_nodePrefab, worldPos, Quaternion.identity, _gridParent);
                 nodeObj.name = $"Node_{x}_{y}";
                 
-                // Her node için yeni bir material instance oluştur
                 var renderer = nodeObj.GetComponent<Renderer>();
                 if (renderer != null)
                 {
@@ -63,14 +90,13 @@ public class GridVisualizer : MonoBehaviour
     {
         if (path == null)
         {
-            Debug.LogError("VisualizePath'e null path geldi!");
             return;
         }
 
-        Debug.Log("Yol görselleştiriliyor...");
+        Debug.Log("The path is being visualized...");
         foreach (Node node in path)
         {
-            Debug.Log($"Node işaretleniyor: {node.GridPosition}");
+            Debug.Log($"Node is being marked: {node.GridPosition}");
             UpdateNodeVisual(node.GridPosition.x, node.GridPosition.y, Color.green);
         }
 
@@ -95,21 +121,19 @@ public class GridVisualizer : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Renderer bulunamadı: Node_{x}_{y}");
+                Debug.LogError($"Renderer Not Found: Node_{x}_{y}");
             }
         }
         else
         {
-            Debug.LogError($"Node objesi bulunamadı: {x}, {y}");
+            Debug.LogError($"Node Object Not Found: {x}, {y}");
         }
     }
 
-    public void UpdateAllGrid(List<Vector2Int> obstacles)
+    private void UpdateAllGrid(List<Vector2Int> obstacles)
     {
-        // Grid'i güncelle
         _grid.UpdateNodeStates(obstacles);
         
-        // Görsel güncelleme
         for (int x = 0; x < _gridSizeX; x++)
         {
             for (int y = 0; y < _gridSizeY; y++)
@@ -120,12 +144,11 @@ public class GridVisualizer : MonoBehaviour
         }
     }
 
-    public void FindNewPath()
+    [Button]
+    public void FindPath()
     {
-        // Önce engelleri güncelle
         UpdateAllGrid(_obstacles);
         
-        // Sonra yol bul
         List<Node> path = _pathFinder.FindPath(_startPos, _targetPos);
         if (path != null)
         {
@@ -133,8 +156,7 @@ public class GridVisualizer : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Yol bulunamadı!");
-            // Yol bulunamadığında zaten engeller güncel olacak
+            Debug.Log("The Path Not Found!");
         }
     }
 } 

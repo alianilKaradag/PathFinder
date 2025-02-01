@@ -22,14 +22,8 @@ public class Node
     }
 
     public void SetWalkable(bool walkable) => IsWalkable = walkable;
-    
-
     public void SetGCost(int gCost) => GCost = gCost;
-    
-
     public void SetHCost(int hCost) => HCost = hCost;
-    
-
     public void SetParent(Node parent) => Parent = parent;
     
 
