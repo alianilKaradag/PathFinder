@@ -12,16 +12,16 @@ A simple, clean and reusable A* pathfinding implementation in Unity.
 ## Screenshots
 
 ### Basic Grid View
-<img src="ss/ss1.png" width="600">
+<img src="ss/1.png" width="600">
 
 ### Path Finding Example
-<img src="ss/ss2.png" width="600">
+<img src="ss/2.png" width="600">
 
 ### Different Grid Size
-<img src="ss/ss3.png" width="600">
+<img src="ss/3.png" width="600">
 
 ### With Obstacles
-<img src="ss/ss4.png" width="600">
+<img src="ss/4.png" width="600">
 
 ## How It Works
 - Uses A* algorithm for finding the shortest path
